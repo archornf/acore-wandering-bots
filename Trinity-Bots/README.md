@@ -1,6 +1,6 @@
 ### This mod was last updated:
-### TC: 11 Feb 2023, [1fdfb2201a](https://github.com/trickerer/TrinityCore-3.3.5-with-NPCBots/commit/1fdfb2201a)
-### AC: 11 Feb 2023, [68e1efe8d4](https://github.com/trickerer/AzerothCore-wotlk-with-NPCBots/commit/68e1efe8d4)
+### TC: 11 Mar 2023, [3c2dd65b02](https://github.com/trickerer/TrinityCore-3.3.5-with-NPCBots/commit/3c2dd65b02)
+### AC: 11 Mar 2023, [11f5bc54d8](https://github.com/trickerer/AzerothCore-wotlk-with-NPCBots/commit/11f5bc54d8)
 
 ### Have questions? Found a bug? [Issues](https://github.com/trickerer/Trinity-Bots/issues)
 
@@ -42,7 +42,7 @@ This manual is created to officially state the purpose and explain the usage of 
 
 ---------------------------------------
 ## NPCBOTS
-NPCBots are hireable pet-like minions. You don't have full control over them, but you can tune their behavior in many ways. Bots will follow you around, buff you, defend you and help you in general. Their main purpose is to support players during their leveling although they can do dungeons and raids, but expect them being stupid in there
+NPCBots are hireable pet-like minions (with some exceptions). You don't have full control over them, but you can tune their behavior in many ways. Bots will follow you around, buff you, defend you and help you in general. Their main purpose is to support players during their leveling although they can do dungeons and raids, but expect them being stupid in there
 
 Features of the NPCBots:  
 
@@ -78,9 +78,9 @@ Features of the NPCBots:
 
 
 ### NPCBot Mod Installation
-NPCBots is a TrinityCore mod (https://github.com/TrinityCore/TrinityCore/), currently only 3.3.5 branch is supported  
+NPCBots is a TrinityCore/AzerothCore mod (https://github.com/TrinityCore/TrinityCore/, https://github.com/azerothcore/azerothcore-wotlk/), only 3.3.5 branch is supported  
 
-**There is a pre-patched repository available [here](https://github.com/trickerer/TrinityCore-3.3.5-with-NPCBots/)**  
+**Pre-patched repository available for TC and AC [here](https://github.com/trickerer/TrinityCore-3.3.5-with-NPCBots/) and [here](https://github.com/trickerer/AzerothCore-wotlk-with-NPCBots/)**  
 If you still prefer the patch then keep on reading, otherwise clone the patched repo and jump to step 4  
 
 At the very start of this document you can find a link for TrinityCore revision for the last version of NPCBots. There is no guarantee you will be able to apply the mod if you are using other version of TrinityCore  
@@ -209,10 +209,10 @@ _ARGUMENT_  indicates argument names
     - **`stopfully _TARGET_`** -- set NPCBot(s) to IDLE mode  
         - _TARGET_ = selected (your) NPCBot (command affects this NPCBot)  
         - _TARGET_ = any other unit or no selection (command affects all your NPCBots)  
-    - **`unbind <_TARGET_|_NAME_>`** -- free NPCBot temporarily without dismissing them. Bot will return to home position and wait there until invited back (or server restart)  
-    - **`rebind <_TARGET_|_NAME_>`** -- call unbound NPCBot back. Use `.npcbot info` to list your unbound NPCBots  
+    - **`unbind <_TARGET_|_NAMES..._>`** -- free NPCBot(s) temporarily without dismissing them. Bot(s) will return to home position and wait there until invited back (or server restart)  
+    - **`rebind <_TARGET_|_NAMES..._>`** -- call unbound NPCBot(s) back. Use `.npcbot info` to list your unbound NPCBots  
         - _TARGET_ = selected (your) NPCBot (command affects this NPCBot)  
-        - _NAME_ = case-insensitive NPCBot name (command affects named NPCBot)  
+        - _NAMES..._ = case-insensitive NPCBot name(s), *name_containing_spaces_must_be_underscored* (command affects named NPCBot(s))  
     - **`walk`** -- toggle WALK mode for NPCBots  
     - **`nogossip`** -- toggle GOSSIP availability for NPCBots  
     **Example Usage:**  
@@ -243,16 +243,19 @@ _ARGUMENT_  indicates argument names
         - **`set <_NUMBER_> <_TARGET_|_NAMES..._>`** -- (Player command) marks NPCBots' current positions as a station point by the `<_NUMBER_>`  
     - _NUMBER_ = integer in range `1 ... 5`  
     - _TARGET_ = selected NPCBot (move single NPCBot)  
-    - _NAMES..._ = space-separated case-insensitive NPCBot names (move a group of NPCBots)  
+    - _NAMES..._ = space-separated case-insensitive NPCBot names, *name_containing_spaces_must_be_underscored* (move a group of NPCBots)  
     **Example Usage:**  
         - `.npcbot sendto`  
         - `.npcb send eva jol eanor harene`  
         - `.npcbot sendto last eva jol eanor harene`  
 - **`recall _TARGET_`** -- (Player command) forces a NPCBot to move directly on your position. Usable while dead. Designed mostly for situations like when you die and your NPCBots are stuck under textures and in combat at the same time  
+    - **`teleport _TARGET_`** -- (Player command) forces NPCBots to *teleport* to you immediatelly. Cannot be used in PvP  
+    - **`spawns`** -- (Player command) forces your inactive NPCBots to teleport to their spawn locations immediatelly. Use if bots do not join you back after logout  
     - _TARGET_ = selected NPCBot (move single NPCBot)  
     - _TARGET_ = self (move all NPCBots)  
     **Example Usage:**  
         - `.npcbot recall`  
+        - `.npcb rec tele`  
 - **`kill _TARGET_`|`suicide _TARGET_`** -- (Player command) forces a NPCBot to die. Designed for troubleshooting in situations like when NPCBots are not acting normally. This can be caused by a rare bug causing creatures to retain Unit States. If this doesn't work, try to `/tickle` them  
     - _TARGET_ = selected NPCBot (kill single NPCBot troublemaker)  
     - _TARGET_ = self (kill all your NPCBots)  
@@ -261,7 +264,7 @@ _ARGUMENT_  indicates argument names
         - `.npcbot suicide`  
 - **`order`** -- (Player command) allows you to issue an order to your NPCBot. Orders take priority over any other action. Each bot can have up to 3 queued orders at a time (by itself will display list of subcommands)  
     - **`cast <_BOT_NAME_ OR _CLASS_NAME_> <_SPELL_NAME_> [_TARGET_TOKEN_]`** -- cast some spell  
-        - _BOT_NAME_ OR _CLASS_NAME_ = your bot name in client's locale, case insensitive OR bot class name in english, in lower case  
+        - _BOT_NAME_ OR _CLASS_NAME_ = your bot name in client's locale, case insensitive OR bot class name in english, in lower case, *name_containing_spaces_must_be_underscored*  
         - _SPELL_NAME_ = spell name in client's locale. All_spaces_must_be_replaced_with_underscores. Case insensitive  
         - _TARGET_TOKEN_ = optional target identifier string. If left empty bot will target self. Case insensitive. Possible values:  
             - `bot`, `self` = selfcast  
@@ -285,6 +288,11 @@ _ARGUMENT_  indicates argument names
     **Example Usage:**  
         - `.npcbot vehicle eject`  
         - `.npcb veh e`  
+- **`go _ENTRY_`** -- (Admin command) allows you to teleport to NPCBot's current location, similar to `.appear` command for players. Be careful as this command may occasionally teleport you below ground level due to creature pathing errors  
+    - _ENTRY_ = creature ID  
+    **Example Usage:**  
+        - `.npcbot go 70855` (teleport to NPCBot 70855)  
+        - `.npcb go 70855`  
 - **`dump`** -- (Admin command) allows you to migrate bots data, similar to `pdump` for players (by itself will display list of subcommands)  
     - **`write <_FILENAME_>`** -- creates a backup file containing info required to move bots to another DB  
         - _FILENAME_ = name of the file to create, will be saved in server root folder (Windows) or home directory (Linux), if file extension is not provided, **.sql** wil be used  
@@ -298,7 +306,7 @@ _ARGUMENT_  indicates argument names
             - `.npcbot dump load bots_backup` (load from `bots_backup.sql`)  
             - `.npcb du l 1.txt` (load from `1.txt`)  
 - **`createnew <_NAME_> <_CLASS_> _RACE_ _GENDER_ _SKIN_ _FACE_ _HEARSTYLE_ _HAIRCOLOR_ _FEATURES_ _SOUNDSET_`** -- (Admin command) allows you to create new NPCBots for players to use. Creature ids 70800+ are used for that.  
-    - _NAME_ = name of created NPCBot. Note that first letter will always be in Upper Case  
+    - _NAME_ = name of created NPCBot. Note that first letter will always be in Upper Case, *name_containing_spaces_must_be_underscored*  
     - _CLASS_ = this refers to NPCBot class. Use `.npcbot lookup` comand to list all available classes  
     - _RACE_ = you have to provide a race for your new NPCbot unless you are creating a NPCBot of one of the special classes for whose race is predefined as well as other details  
         - 1: Human  

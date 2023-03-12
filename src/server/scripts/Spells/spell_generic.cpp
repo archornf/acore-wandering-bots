@@ -43,7 +43,7 @@
 #include "Vehicle.h"
 #include <array>
 
-// TODO: this import is not necessary for compilation and marked as unused by the IDE
+/// @todo: this import is not necessary for compilation and marked as unused by the IDE
 //  however, for some reasons removing it would cause a damn linking issue
 //  there is probably some underlying problem with imports which should properly addressed
 //  see: https://github.com/azerothcore/azerothcore-wotlk/issues/9766
@@ -764,9 +764,27 @@ class spell_gen_proc_not_self : public AuraScript
         return eventInfo.GetActor() != eventInfo.GetActionTarget();
     }
 
+    //void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+    //{
+    //    PreventDefaultAction();
+    //    if (Unit* caster = GetCaster())
+    //        if (Unit* target = eventInfo.GetActionTarget())
+    //        {
+    //            uint32 spellID = aurEff->GetSpellInfo()->Effects[aurEff->GetEffIndex()].TriggerSpell;
+    //            caster->m_Events.AddEventAtOffset([caster, target, spellID]()
+    //            {
+    //                if (target)
+    //                {
+    //                    caster->CastSpell(target, spellID, true);
+    //                }
+    //            }, 100ms);
+    //        }
+    //}
+
     void Register() override
     {
         DoCheckProc += AuraCheckProcFn(spell_gen_proc_not_self::CheckProc);
+        //OnEffectProc += AuraEffectProcFn(spell_gen_proc_not_self::HandleProc, EFFECT_0, SPELL_AURA_PROC_TRIGGER_SPELL);
     }
 };
 
